@@ -11,17 +11,21 @@
 package test;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+
 import org.joone.engine.*;
 import org.joone.engine.learning.*;
 import org.joone.io.*;
 import org.joone.net.NeuralNet;
 
-public class Test implements NeuralNetListener {
+public class EXor implements NeuralNetListener {
     private static String inputData = "src/test/xor.txt";
     private static String outputFile = "/tmp/xorout.txt";
+    private static String objectFile = "/tmp/object.txt";
     
     /** Creates new XOR */
-    public Test() {
+    public EXor() {
     }
     
     /**
@@ -29,7 +33,7 @@ public class Test implements NeuralNetListener {
      */
     
     public static void main(String args[]) {
-    	Test xor = new Test();
+    	EXor xor = new EXor();
         xor.Go(inputData, outputFile);
     }
     
@@ -115,6 +119,9 @@ public class Test implements NeuralNetListener {
         monitor.setTotCicles(2000); /* How many times the net must be trained on the input patterns */
         monitor.setLearning(true); /* The net must be trained */
         nnet.go(); /* The net starts the training job */
+        
+        saveNeuralNet(objectFile, nnet);
+
     }
     
     public void netStopped(NeuralNetEvent e) {
@@ -137,4 +144,16 @@ public class Test implements NeuralNetListener {
     
     public void netStoppedError(NeuralNetEvent e,String error) {
     }
+
+    public void saveNeuralNet(String fileName, NeuralNet nnet) {
+    	try {
+	    	FileOutputStream stream = new FileOutputStream(fileName);
+	    	ObjectOutputStream out = new ObjectOutputStream(stream);
+	    	out.writeObject(nnet);
+	    	out.close();
+    	}
+    	catch (Exception excp) {
+    		excp.printStackTrace();
+    	}
+   	}
 }
